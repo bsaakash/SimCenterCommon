@@ -42,6 +42,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QDebug>
+#include <QFileDialog>
+#include <QPushButton>
+
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <time.h>
+
 #include <QStackedWidget>
 #include <QCheckBox>
 
