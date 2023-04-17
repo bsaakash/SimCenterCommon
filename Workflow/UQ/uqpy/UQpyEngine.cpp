@@ -55,7 +55,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QDebug>
 
-#include <UQpySubsetSimulation.h>
+#include <UQpyInputsReliability.h>
+#include <UQpyInputsMCMCAlgorithms.h>
 
 
 UQpyEngine::UQpyEngine(UQ_EngineType type, QWidget *parent)
@@ -66,6 +67,53 @@ UQpyEngine::UQpyEngine(UQ_EngineType type, QWidget *parent)
     theRandomVariables =  new RandomVariablesContainer(classType);
     theResults = new UQ_Results();
   ***************************************************************/
+    QVBoxLayout *layout = new QVBoxLayout();
+
+    QHBoxLayout *theSelectionLayout = new QHBoxLayout();
+    QLabel *label = new QLabel();
+    label->setText(QString("UQpy Method Category"));
+    theEngineSelectionBox = new QComboBox();
+    theEngineSelectionBox->addItem(tr("Reliability"));
+    theEngineSelectionBox->addItem(tr("MCMC Sampling"));
+    theEngineSelectionBox->setMinimumWidth(600);
+
+    theSelectionLayout->addWidget(label);
+    theSelectionLayout->addWidget(theEngineSelectionBox);
+    //theSelectionLayout->addStretch();
+    //theSelectionLayout->addWidget(new QSpacerItem(20,5));
+    parallelCheckBox = new QCheckBox("Parallel Execution  ");
+    parallelCheckBox->setChecked(true);
+
+    theSelectionLayout->addWidget(parallelCheckBox);
+    theSelectionLayout->addStretch();
+
+    layout->addLayout(theSelectionLayout);
+
+    //
+    // create the stacked widget
+    //
+
+    theStackedWidget = new QStackedWidget();
+
+    //
+    // create the individual widgets add to stacked widget
+    //
+
+    theReliabilityEngine = new UQpyInputsReliability();
+    theMCMCEngine = new UQpyInputsMCMCAlgorithms();
+
+    theStackedWidget->addWidget(theReliabilityEngine);
+    theStackedWidget->addWidget(theMCMCEngine);
+
+    layout->addWidget(theStackedWidget);
+    this->setLayout(layout);
+    theCurrentEngine=theReliabilityEngine;
+
+    connect(theEngineSelectionBox, SIGNAL(currentTextChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
+    // connect(theSamplingEngine, SIGNAL(onNumModelsChanged(int)), this, SLOT(numModelsChanged(int)));
+
+    theCurrentEngine = theReliabilityEngine;
+
 }
 
 UQpyEngine::~UQpyEngine()
@@ -73,20 +121,81 @@ UQpyEngine::~UQpyEngine()
 
 }
 
+void UQpyEngine::engineSelectionChanged(const QString &arg1)
+{
+    if ((arg1 == QString("Reliability")) || (arg1 == QString("Reliability Analysis"))) {
+
+      theStackedWidget->setCurrentIndex(0);
+      theCurrentEngine = theReliabilityEngine;
+
+    } else if ((arg1 == QString("MCMC")) || (arg1 == QString("MCMC Sampling"))) {
+
+        theStackedWidget->setCurrentIndex(1);
+        theCurrentEngine = theMCMCEngine;
+
+    } else {
+      qDebug() << "ERROR .. UQpyEngine selection .. type unknown: " << arg1;
+    }
+
+    emit onUQ_EngineChanged();
+}
+
+
 int
 UQpyEngine::getMaxNumParallelTasks(void) {
-    return 1;
+    return theCurrentEngine->getMaxNumParallelTasks();
 }
 
 bool
-UQpyEngine::outputToJSON( QJsonObject &rvObject) {
+UQpyEngine::outputToJSON( QJsonObject &jsonObject) {
+
+    QString uqMethod = theEngineSelectionBox->currentText();
+    jsonObject["uqType"] = uqMethod;
+    jsonObject["parallelExecution"] = parallelCheckBox->isChecked();
+//    jsonObject["saveWorkDir"] = removeWorkdirCheckBox->isChecked();
+
+    return theCurrentEngine->outputToJSON(jsonObject);
+}
+
+
+bool
+UQpyEngine::inputFromJSON(QJsonObject &jsonObject) {
+    bool result = false;
+
+    QString uqMethod = jsonObject["uqType"].toString();
+
+    bool doParallel = true;
+    if (jsonObject.contains("parallelExecution"))
+        doParallel = jsonObject["parallelExecution"].toBool();
+
+    parallelCheckBox->setChecked(doParallel);
+
+
+    int index = theEngineSelectionBox->findText(uqMethod);
+    theEngineSelectionBox->setCurrentIndex(index);
+    this->engineSelectionChanged(uqMethod);
+    if (theCurrentEngine != 0)
+        result = theCurrentEngine->inputFromJSON(jsonObject);
+    else
+        result = false; // don't emit error as one should have been generated
+
+    return result;
+}
+
+bool
+UQpyEngine::outputAppDataToJSON(QJsonObject &jsonObject)
+{
+    jsonObject["Application"] = "UQpy";
+    QJsonObject dataObj;
+    jsonObject["ApplicationData"] = dataObj;
+
     return true;
 }
 
-
 bool
-UQpyEngine::inputFromJSON(QJsonObject &rvObject) {
-    Q_UNUSED(rvObject);
+UQpyEngine::inputAppDataFromJSON(QJsonObject &jsonObject)
+{
+    Q_UNUSED(jsonObject);
     return true;
 }
 
@@ -97,15 +206,17 @@ UQpyEngine::getParameters() {
   return RandomVariablesContainer::getInstance();
 }
 
-UQ_Results *UQpyEngine::getResults(void) {
-  UQ_Results *theRes = new UQ_Results();
-  return theRes;
+UQ_Results *
+UQpyEngine::getResults(void) {
+  return theCurrentEngine->getResults();
 }
+
 
 void
 UQpyEngine::clear(void) {
     return;
 }
+
 
 void
 UQpyEngine::setRV_Defaults(void) {
@@ -114,8 +225,8 @@ UQpyEngine::setRV_Defaults(void) {
   QString engineType = "UQpy";
 
   theRVs->setDefaults(engineType, classType, Normal);
+  return theCurrentEngine->setRV_Defaults();
 }
-
 
 QString
 UQpyEngine::getProcessingScript() {
@@ -124,7 +235,20 @@ UQpyEngine::getProcessingScript() {
 
 QString
 UQpyEngine::getMethodName() {
-  return QString("UQpy");
+    return theCurrentEngine->getMethodName();
 }
 
+void
+UQpyEngine::numModelsChanged(int newNum) {
+    emit onNumModelsChanged(newNum);
+}
+
+
+bool
+UQpyEngine::copyFiles(QString &fileDir) {
+    QString googleString=QString("UQ-UQpy-") + this->getMethodName();
+    GoogleAnalytics::ReportAppUsage(googleString);
+
+    return theCurrentEngine->copyFiles(fileDir);
+}
 

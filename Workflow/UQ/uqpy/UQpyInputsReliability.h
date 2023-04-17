@@ -1,5 +1,5 @@
-// Written: fmckenna
-
+#ifndef UQPYINPUTSRELIABILITY_H
+#define UQPYINPUTSRELIABILITY_H
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
@@ -36,105 +36,57 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
-// Modified: Dimitris, Aakash
-
-#include "UQpySubsetSimulation.h"
-#include <UQpyResultsSubsetSim.h>
-#include <RandomVariablesContainer.h>
-
+#include <UQ_Engine.h>
+#include <QGroupBox>
+#include <QVector>
+#include <QVBoxLayout>
+#include <QComboBox>
 #include <QPushButton>
-#include <QScrollArea>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QLabel>
-#include <QLineEdit>
-#include <QDebug>
-#include <QFileDialog>
-#include <QPushButton>
-#include <sectiontitle.h>
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <time.h>
+class DakotaResultsReliability;
+//class UQpyResultsReliability;
+class UQ_Results;
+class UQ_Method;
+class QCheckBox;
+class QStackedWidget;
 
-#include <QStackedWidget>
-//#include <SubsetSimulationWidget.h>
-
-UQpySubsetSimulation::UQpySubsetSimulation(QWidget *parent)
-: UQ_Method(parent)
+class UQpyInputsReliability : public UQ_Engine
 {
-    layout = new QVBoxLayout();
-    mLayout = new QVBoxLayout();
+    Q_OBJECT
+public:
+    explicit UQpyInputsReliability(QWidget *parent = 0);
+    ~UQpyInputsReliability();
 
+    bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
 
-    //
-    // create layout for selection box for method type to layout
-    //
+    bool outputAppDataToJSON(QJsonObject &jsonObject);
+    bool inputAppDataFromJSON(QJsonObject &jsonObject);
 
-    QHBoxLayout *methodLayout= new QHBoxLayout;
-    QLabel *label1 = new QLabel();
-    label1->setText(QString("Method"));
-    reliabilityMethod = new QComboBox();
-    reliabilityMethod->setMaximumWidth(200);
-    reliabilityMethod->setMinimumWidth(200);
-    reliabilityMethod->addItem(tr("Subset Simulation"));
+    UQ_Results *getResults(void);
+    void setRV_Defaults(void);
 
-    methodLayout->addWidget(label1);
-    methodLayout->addWidget(reliabilityMethod);
-    methodLayout->addStretch(1);
+    int getMaxNumParallelTasks(void);
 
-    mLayout->addLayout(methodLayout);
+    QVBoxLayout *mLayout;
+    QString getMethodName();
 
-    //
-    // qstacked widget to hold all widgets
-    //
+signals:
 
-    theStackedWidget = new QStackedWidget();
+public slots:
+    void clear(void);
+    void onTextChanged(QString);
+    void numModelsChanged(int numModels);
 
-    //theSubsetSim = new SubsetSimulationWidget();
-    //theStackedWidget->addWidget(theSubsetSim);
+private:
+    QVBoxLayout *layout;
+    QComboBox   *reliabilityMethod;
+//    UQpyResultsReliability *results;
+    DakotaResultsReliability *results;
 
-    mLayout->addWidget(theStackedWidget);
-    layout->addLayout(mLayout);
+    QStackedWidget *theStackedWidget;
+    UQ_Method *theCurrentMethod;
+    UQ_Method *theSubsetSim;
+};
 
-    this->setLayout(layout);
-
-}
-
-UQpySubsetSimulation::~UQpySubsetSimulation() {
-
-}
-
-bool
-UQpySubsetSimulation::outputToJSON(QJsonObject &jsonObject) {
-    return true;
-}
-
-bool
-UQpySubsetSimulation::inputFromJSON(QJsonObject &jsonObject){
-    return true;
-}
-
-bool
-UQpySubsetSimulation::outputAppDataToJSON(QJsonObject &jsonObject) {
-    return true;
-}
-
-bool
-UQpySubsetSimulation::inputAppDataFromJSON(QJsonObject &jsonObject) {
-    return true;
-}
-
-
-void
-UQpySubsetSimulation::setRV_Defaults(void) {
-
-}
-
-
-int
-UQpySubsetSimulation::getMaxNumParallelTasks(void) {
-    return 1;
-}
+#endif // UQPYINPUTSRELIABILITY_H

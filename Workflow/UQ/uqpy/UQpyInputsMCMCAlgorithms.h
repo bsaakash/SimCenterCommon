@@ -1,11 +1,10 @@
-#ifndef UQpy_ENGINE_H
-#define UQpy_ENGINE_H
-
+#ifndef UQPYINPUTSMCMCALGORITHMS_H
+#define UQPYINPUTSMCMCALGORITHMS_H
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
@@ -29,66 +28,64 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 
-REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS 
-PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, 
+THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS
+PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
 UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
-
 #include <UQ_Engine.h>
+#include <AffineInvariantMCMCInputsWidget.h>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QComboBox>
 #include <QStackedWidget>
 #include <QCheckBox>
 
-class UQ_Results;
+class DakotaResultsBayesianCalibration;
 class RandomVariablesContainer;
 
-class UQpyEngine : public UQ_Engine
+class UQpyInputsMCMCAlgorithms : public UQ_Engine
 {
     Q_OBJECT
 public:
-    explicit UQpyEngine(UQ_EngineType type, QWidget *parent = 0);
-    ~UQpyEngine();
+    explicit UQpyInputsMCMCAlgorithms(QWidget *parent = 0);
+    ~UQpyInputsMCMCAlgorithms();
 
-    int getMaxNumParallelTasks(void);
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
     bool outputAppDataToJSON(QJsonObject &jsonObject);
     bool inputAppDataFromJSON(QJsonObject &jsonObject);
 
-    void setRV_Defaults(void);
-    bool copyFiles(QString &fileDir);
 
-    RandomVariablesContainer *getParameters();
     UQ_Results *getResults(void);
+    void setRV_Defaults(void);
 
-    QString getProcessingScript();
+    int getMaxNumParallelTasks(void);
     QString getMethodName();
 
-    void clear(void);
+    UQ_Method *theCurrentMethod;
 
 signals:
-    void onUQ_EngineChanged(void);
-    void onNumModelsChanged(int newNum);
 
 public slots:
-    void engineSelectionChanged(const QString &arg1);
-    void numModelsChanged(int newNum);
-
+    void clear(void);
+    void onTextChanged(const QString &arg1);
+    void numModelsChanged(int numModels);
 
 private:
-    RandomVariablesContainer *theRandomVariables;
-    UQ_Results *theResults;
-    QComboBox   *theEngineSelectionBox;
+    QVBoxLayout *mLayout;
+    QVBoxLayout *layout;
+    QComboBox   *mcmcMethod;
+
+    DakotaResultsBayesianCalibration *results;
+
     QStackedWidget *theStackedWidget;
-    QCheckBox *parallelCheckBox;
-    UQ_Engine *theCurrentEngine;
-    UQ_Engine *theReliabilityEngine;
-    UQ_Engine *theMCMCEngine;
+    AffineInvariantMCMCInputsWidget *theStretch;
+    QHBoxLayout *methodLayout;
 };
 
-#endif // UQpy_ENGINE_H
+#endif // UQPYINPUTSMCMCALGORITHMS_H

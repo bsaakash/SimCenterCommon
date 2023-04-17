@@ -1,6 +1,5 @@
-#ifndef UQPYSUBSETSIMULATION_H
-#define UQPYSUBSETSIMULATION_H
-
+#ifndef AFFINEINVARIANTMCMCINPUTSWIDGET_H
+#define AFFINEINVARIANTMCMCINPUTSWIDGET_H
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
@@ -20,7 +19,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
 ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -37,58 +36,37 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
+// Written: fmckenna
+
 #include <UQ_Method.h>
-#include <UQ_Results.h>
+class QLineEdit;
+class QIntValidator;
+class QDoubleValidator;
 
-#include <QGroupBox>
-#include <QVector>
-#include <QVBoxLayout>
-#include <QComboBox>
-#include <QPushButton>
-
-
-class UQ_EngineMethod;
-class QCheckBox;
-class UQpyResultsSubsetSim;
-class QStackedWidget;
-
-
-class UQpySubsetSimulation : public UQ_Method
+class AffineInvariantMCMCInputsWidget : public UQ_Method
 {
     Q_OBJECT
 public:
-    explicit UQpySubsetSimulation(QWidget *parent = 0);
-    ~UQpySubsetSimulation();
+    explicit AffineInvariantMCMCInputsWidget(QWidget *parent = 0);
+    ~AffineInvariantMCMCInputsWidget();
 
-    bool outputToJSON(QJsonObject &jsonObject);
-    bool inputFromJSON(QJsonObject &jsonObject);
-    bool outputAppDataToJSON(QJsonObject &jsonObject);
-    bool inputAppDataFromJSON(QJsonObject &jsonObject);
-    void setRV_Defaults(void);
-    int getMaxNumParallelTasks(void);
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+    void clear(void);
 
-    UQ_Results *getResults(void);
-    QString getMethodName();
-
-signals:
-
-public slots:
-//   void clear(void);
-//   void onTextChanged(const QString &arg1);
-//   void numModelsChanged(int numModels);
+    int getNumberTasks(void);
 
 private:
-    QVBoxLayout *layout;
-    QVBoxLayout *mLayout;
-    QComboBox   *reliabilityMethod;
-    QLineEdit   *numSamples;
-    QLineEdit   *randomSeed;
-
-    UQpyResultsSubsetSim *results;
-
-    QStackedWidget *theStackedWidget;
-    UQ_Method *theSubsetSim;
-
+    QLineEdit *randomSeed;
+    QLineEdit *numSamples;
+    QIntValidator *intValidator;
+    QLineEdit *numChains;
+    QLineEdit *numBurnIn;
+    QLineEdit *jump;
+    QIntValidator *int1Validator;
+    QLineEdit *scale;
+    QDoubleValidator *doubleValidator;
+    QLineEdit *logLikelihoodScript;
 };
 
-#endif // UQPYSUBSETSIMULATION_H
+#endif // AFFINEINVARIANTMCMCINPUTSWIDGET_H
