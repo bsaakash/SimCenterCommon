@@ -42,8 +42,12 @@ SOURCES += $$PWD/UQ/UQ_EngineSelection.cpp \
     $$PWD/UQ/customUQ/CustomUQ_Results.cpp \
     $$PWD/UQ/customUQ/UQ_JsonEngine.cpp \
     $$PWD/UQ/uqpy/UQpyEngine.cpp\
-    $$PWD/UQ/uqpy/UQpyResultsSubsetSim.cpp \
-    $$PWD/UQ/uqpy/UQpySubsetSimulation.cpp \
+    $$PWD/UQ/uqpy/AffineInvariantMCMCInputsWidget.cpp \
+    $$PWD/UQ/uqpy/UQpyInputsMCMCAlgorithms.cpp \
+    $$PWD/UQ/uqpy/UQpyInputsReliability.cpp \
+    $$PWD/UQ/uqpy/UQpyInputsSubsetSimulation.cpp \
+    $$PWD/UQ/uqpy/UQpyResultsReliability.cpp \
+    $$PWD/UQ/uqpy/UQpyResultsSubsetSimulation.cpp \
     $$PWD/UQ/common/ResultsDataChart.cpp \
     $$PWD/UQ/dakota/DakotaEngine.cpp \
     $$PWD/UQ/dakota/DakotaInputSampling.cpp \
@@ -150,7 +154,13 @@ HEADERS += $$PWD/UQ/UQ_EngineSelection.h \
     $$PWD/UQ/UQ_Results.h \
     $$PWD/UQ/UQ_Engine.h \
     $$PWD/UQ/UQ_Method.h \
-    $$PWD/UQ/uqpy/UQpyEngine.h \
+    $$PWD/UQ/uqpy/UQpyEngine.h\
+    $$PWD/UQ/uqpy/AffineInvariantMCMCInputsWidget.h \
+    $$PWD/UQ/uqpy/UQpyInputsMCMCAlgorithms.h \
+    $$PWD/UQ/uqpy/UQpyInputsReliability.h \
+    $$PWD/UQ/uqpy/UQpyInputsSubsetSimulation.h \
+    $$PWD/UQ/uqpy/UQpyResultsReliability.h \
+    $$PWD/UQ/uqpy/UQpyResultsSubsetSimulation.h \
     $$PWD/UQ/customUQ/CustomUQ_Results.h \
     $$PWD/UQ/customUQ/UQ_JsonEngine.h \
     $$PWD/UQ/common/ResultsDataChart.h \
@@ -195,8 +205,6 @@ HEADERS += $$PWD/UQ/UQ_EngineSelection.h \
     $$PWD/UQ/simcenterUQ/SimCenterUQResultsPLoM.h \
     $$PWD/UQ/simcenterUQ/ImportSamplesWidget.h \
     $$PWD/UQ/simcenterUQ/MonteCarloInputSimWidget.h \
-    $$PWD/UQ/uqpy/UQpyResultsSubsetSim.h \
-    $$PWD/UQ/uqpy/UQpySubsetSimulation.h \
     $$PWD/WORKFLOW/MainWindowWorkflowApp.h \
     $$PWD/WORKFLOW/WorkflowAppWidget.h \
     $$PWD/WORKFLOW/SimCenterComponentSelection.h \
