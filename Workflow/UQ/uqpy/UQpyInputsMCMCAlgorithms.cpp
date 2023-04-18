@@ -173,7 +173,8 @@ UQpyInputsMCMCAlgorithms::inputAppDataFromJSON(QJsonObject &jsonObject)
 
 UQ_Results *
 UQpyInputsMCMCAlgorithms::getResults(void) {
-  return new DakotaResultsBayesianCalibration(RandomVariablesContainer::getInstance());
+    int numBurn = 0;
+  return new DakotaResultsBayesianCalibration(numBurn);
 }
 
 void
