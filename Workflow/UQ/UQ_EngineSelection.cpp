@@ -164,7 +164,7 @@ UQ_EngineSelection::initialize()
     if (typeOption == All)
     {
       this->addComponent(QString("UCSD-UQ"), QString("UCSD-UQ"), theUCSD_Engine);
-      //this->addComponent(QString("UQpy"), QString("UQpy"), theUQpyEngine);
+      this->addComponent(QString("UQpy"), QString("UQpy"), theUQpyEngine);
     }
 
     if (includeNoneOption) {
@@ -178,11 +178,13 @@ UQ_EngineSelection::initialize()
     connect(theSimCenterUQEngine, SIGNAL(onUQ_MethodUpdated(QString)), this, SLOT(methodSelectionChanged(QString)));
     connect(theCustomEngine, SIGNAL(onUQ_MethodUpdated(QString)), this, SLOT(methodSelectionChanged(QString)));
     connect(theUCSD_Engine, SIGNAL(onUQ_MethodUpdated(QString)), this, SLOT(methodSelectionChanged(QString)));
+    connect(theUQpyEngine, SIGNAL(onUQ_MethodUpdated(QString)), this, SLOT(methodSelectionChanged(QString)));
 
     connect(theDakotaEngine, SIGNAL(onUQ_EngineChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
     connect(theSimCenterUQEngine, SIGNAL(onUQ_EngineChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
     connect(theCustomEngine, SIGNAL(onUQ_EngineChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
     connect(theUCSD_Engine, SIGNAL(onUQ_EngineChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
+    connect(theUQpyEngine, SIGNAL(onUQ_EngineChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
 
 //    connect(theDakotaEngine, SIGNAL(onUQ_MethodUpdated(QString)), theMethodCombo, SLOT(setCurrentText(QString)));
 //    connect(theSimCenterUQEngine, SIGNAL(onUQ_MethodUpdated(QString)), theMethodCombo, SLOT(setCurrentText(QString)));
@@ -219,9 +221,11 @@ void UQ_EngineSelection::engineSelectionChanged(QString arg1)
     } else if (arg1 == "SimCenterUQ" || arg1 == "SimCenterUQ-UQ") {
         theCurrentEngine = theSimCenterUQEngine;
     } else if (arg1 == "CustomUQ") {
-      theCurrentEngine = theCustomEngine;      
+        theCurrentEngine = theCustomEngine;
     } else if (arg1 == "UCSD-UQ") {
-      theCurrentEngine = theUCSD_Engine;
+        theCurrentEngine = theUCSD_Engine;
+    } else if (arg1 == "UQpy") {
+        theCurrentEngine = theUQpyEngine;
     } else {
       qDebug() << "ERROR .. UQ_EngineSelection selection .. type unknown: " << arg1;
     }
