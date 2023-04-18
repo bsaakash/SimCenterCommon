@@ -70,11 +70,11 @@ UQpyEngine::UQpyEngine(UQ_EngineType type, QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout();
 
     QHBoxLayout *theSelectionLayout = new QHBoxLayout();
-    QLabel *label = new QLabel();
+    label = new QLabel();
     label->setText(QString("UQpy Method Category"));
     theEngineSelectionBox = new QComboBox();
-    theEngineSelectionBox->addItem(tr("Reliability"));
-    theEngineSelectionBox->addItem(tr("MCMC Sampling"));
+    theEngineSelectionBox->addItem(tr("Reliability Analysis"));
+    theEngineSelectionBox->addItem(tr("Bayesian Calibration"));
     theEngineSelectionBox->setMinimumWidth(600);
 
     theSelectionLayout->addWidget(label);
@@ -110,7 +110,7 @@ UQpyEngine::UQpyEngine(UQ_EngineType type, QWidget *parent)
     theCurrentEngine=theReliabilityEngine;
 
     connect(theEngineSelectionBox, SIGNAL(currentTextChanged(QString)), this, SLOT(engineSelectionChanged(QString)));
-    // connect(theSamplingEngine, SIGNAL(onNumModelsChanged(int)), this, SLOT(numModelsChanged(int)));
+//     connect(theSamplingEngine, SIGNAL(onNumModelsChanged(int)), this, SLOT(numModelsChanged(int)));
 
     theCurrentEngine = theReliabilityEngine;
 
@@ -128,7 +128,8 @@ void UQpyEngine::engineSelectionChanged(const QString &arg1)
       theStackedWidget->setCurrentIndex(0);
       theCurrentEngine = theReliabilityEngine;
 
-    } else if ((arg1 == QString("MCMC")) || (arg1 == QString("MCMC Sampling"))) {
+    } else if ((arg1 == QString("MCMC")) || (arg1 == QString("MCMC Sampling"))
+               || (arg1 == QString("Bayesian Calibration"))) {
 
         theStackedWidget->setCurrentIndex(1);
         theCurrentEngine = theMCMCEngine;
@@ -137,7 +138,8 @@ void UQpyEngine::engineSelectionChanged(const QString &arg1)
       qDebug() << "ERROR .. UQpyEngine selection .. type unknown: " << arg1;
     }
 
-    emit onUQ_EngineChanged();
+    emit onUQ_EngineChanged(QString("UQpy"));
+    emit onUQ_MethodUpdated(arg1);
 }
 
 
@@ -178,6 +180,8 @@ UQpyEngine::inputFromJSON(QJsonObject &jsonObject) {
         result = theCurrentEngine->inputFromJSON(jsonObject);
     else
         result = false; // don't emit error as one should have been generated
+
+    emit onUQ_MethodUpdated(uqMethod);
 
     return result;
 }
@@ -252,3 +256,15 @@ UQpyEngine::copyFiles(QString &fileDir) {
     return theCurrentEngine->copyFiles(fileDir);
 }
 
+bool
+UQpyEngine::fixMethod(QString methodName) {
+    int res = theEngineSelectionBox->findText(methodName);
+    if (res == -1) {
+        return false;
+    } else {
+        theEngineSelectionBox->setCurrentIndex(res);
+        theEngineSelectionBox->hide();
+        label->hide();
+        return true;
+    }
+}

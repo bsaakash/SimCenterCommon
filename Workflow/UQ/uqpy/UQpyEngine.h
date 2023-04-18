@@ -43,6 +43,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QComboBox>
 #include <QStackedWidget>
 #include <QCheckBox>
+#include <QLabel>
 
 class UQ_Results;
 class RandomVariablesContainer;
@@ -71,9 +72,12 @@ public:
 
     void clear(void);
 
+    bool fixMethod(QString Methodname);
+
 signals:
-    void onUQ_EngineChanged(void);
+    void onUQ_EngineChanged(QString);
     void onNumModelsChanged(int newNum);
+    void onUQ_MethodUpdated(QString);
 
 public slots:
     void engineSelectionChanged(const QString &arg1);
@@ -89,6 +93,7 @@ private:
     UQ_Engine *theCurrentEngine;
     UQ_Engine *theReliabilityEngine;
     UQ_Engine *theMCMCEngine;
+    QLabel *label;
 };
 
 #endif // UQpy_ENGINE_H
