@@ -83,6 +83,15 @@ AffineInvariantMCMCInputsWidget::AffineInvariantMCMCInputsWidget(QWidget *parent
     layout->addWidget(new QLabel("# burn-in"), row, 0);
     layout->addWidget(numBurnIn, row++, 1);
 
+    // create layout label and entry for dimensions
+    dimension = new QLineEdit();
+    dimension->setText(tr("1"));
+    dimension->setValidator(intValidator);
+    dimension->setToolTip("Specify the number of MCMC dimensions");
+
+    layout->addWidget(new QLabel("# dimensions"), row, 0);
+    layout->addWidget(dimension, row++, 1);
+
     // create layout label and entry for jump
     jump = new QLineEdit();
     jump->setText(tr("1"));
@@ -118,16 +127,16 @@ AffineInvariantMCMCInputsWidget::AffineInvariantMCMCInputsWidget(QWidget *parent
     layout->addWidget(randomSeed, row++, 1);
 
     // create label and lineedit for loglikelihood script and add to layout
-    logLikelihoodScript = new QLineEdit();
-    logLikelihoodScript->setPlaceholderText("(Optional)");
-    layout->addWidget(new QLabel("Log-likelihood script"), row, 0);
-    layout->addWidget(logLikelihoodScript, row, 1, 1, 2);
+//    logLikelihoodScript = new QLineEdit();
+//    logLikelihoodScript->setPlaceholderText("(Optional)");
+//    layout->addWidget(new QLabel("Log-likelihood script"), row, 0);
+//    layout->addWidget(logLikelihoodScript, row, 1, 1, 2);
 
-    QPushButton *chooseFile = new QPushButton("Choose");
-    connect(chooseFile, &QPushButton::clicked, this, [=](){
-        logLikelihoodScript->setText(QFileDialog::getOpenFileName(this,tr("Open File"),"C://", "All files (*.py)"));
-    });
-    layout->addWidget(chooseFile, row++, 3);
+//    QPushButton *chooseFile = new QPushButton("Choose");
+//    connect(chooseFile, &QPushButton::clicked, this, [=](){
+//        logLikelihoodScript->setText(QFileDialog::getOpenFileName(this,tr("Open File"),"C://", "All files (*.py)"));
+//    });
+//    layout->addWidget(chooseFile, row++, 3);
 
     layout->setRowStretch(row, 1);
     layout->setColumnStretch(4, 1);
@@ -143,18 +152,19 @@ bool
 AffineInvariantMCMCInputsWidget::outputToJSON(QJsonObject &jsonObj){
 
     bool result = true;
-    jsonObj["samples"]=numSamples->text().toInt();
-    jsonObj["numChains"]=numChains->text().toInt();
     jsonObj["burn-in"]=numBurnIn->text().toInt();
     jsonObj["jump"]=jump->text().toInt();
+    jsonObj["numChains"]=numChains->text().toInt();
+    jsonObj["samples"]=numSamples->text().toInt();
     jsonObj["scale"]=scale->text().toDouble();
+    jsonObj["dimension"]=dimension->text().toInt();
     jsonObj["randomState"]=randomSeed->text().toDouble();
 
-    QString logLike = logLikelihoodScript->text();
-    QFileInfo fileInfo(logLike);
-    jsonObj["logLikelihoodFile"]=fileInfo.fileName();
-    QString path = fileInfo.absolutePath();
-    jsonObj["logLikelihoodPath"]=path;
+//    QString logLike = logLikelihoodScript->text();
+//    QFileInfo fileInfo(logLike);
+//    jsonObj["logLikelihoodFile"]=fileInfo.fileName();
+//    QString path = fileInfo.absolutePath();
+//    jsonObj["logLikelihoodPath"]=path;
     return result;
 }
 
@@ -204,14 +214,14 @@ AffineInvariantMCMCInputsWidget::inputFromJSON(QJsonObject &jsonObject){
         errorMessage(QString("ERROR: Did not find random state information"));
         return false;
     }
-    if (jsonObject.contains("logLikelihoodPath") && jsonObject.contains("logLikelihoodFile")) {
-        QString file = jsonObject["logLikelihoodFile"].toString();
-        QString path = jsonObject["logLikelihoodPath"].toString();
-        if (!(file.trimmed().isEmpty() && path.trimmed().isEmpty())) {
-            logLikelihoodScript->setText(path + "/" + file);
-        }
+//    if (jsonObject.contains("logLikelihoodPath") && jsonObject.contains("logLikelihoodFile")) {
+//        QString file = jsonObject["logLikelihoodFile"].toString();
+//        QString path = jsonObject["logLikelihoodPath"].toString();
+//        if (!(file.trimmed().isEmpty() && path.trimmed().isEmpty())) {
+//            logLikelihoodScript->setText(path + "/" + file);
+//        }
 
-    }
+//    }
 
     result = true;
     return result;

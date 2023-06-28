@@ -61,6 +61,7 @@ private:
     QLineEdit *numSamples;
     QIntValidator *intValidator;
     QLineEdit *numChains;
+    QLineEdit *dimension;
     QLineEdit *numBurnIn;
     QLineEdit *jump;
     QIntValidator *int1Validator;

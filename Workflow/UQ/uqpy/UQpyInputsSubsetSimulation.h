@@ -67,6 +67,7 @@ private:
     QComboBox *samplingMethod;
     QLineEdit *conditionalProbLineEdit;
     QLineEdit *maxLevelsLineEdit;
+    QLineEdit *initialSamplesLineEdit;
     QLineEdit *thresholdLineEdit;
     QDoubleValidator *doubleValidator;
     QIntValidator *intValidator;

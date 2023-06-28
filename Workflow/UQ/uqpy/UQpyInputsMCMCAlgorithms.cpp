@@ -85,10 +85,10 @@ UQpyInputsMCMCAlgorithms::outputToJSON(QJsonObject &jsonObject)
     bool result = true;
 
     QJsonObject uq;
-    uq["method"]=mcmcMethod->currentText();
-    result = theCurrentMethod->outputToJSON(uq);
+    jsonObject["method"]=mcmcMethod->currentText();
+    result = theCurrentMethod->outputToJSON(jsonObject);
 
-    jsonObject["mcmcMethodData"]=uq;
+//    jsonObject["samplingMethod"]=uq;
 
     return result;
 }
@@ -104,8 +104,8 @@ UQpyInputsMCMCAlgorithms::inputFromJSON(QJsonObject &jsonObject)
   // get mcmcMethodData, if not present it's an error
   //
 
-  if (jsonObject.contains("mcmcMethodData")) {
-      QJsonObject uq = jsonObject["mcmcMethodData"].toObject();
+  if (jsonObject.contains("samplingMethod")) {
+      QJsonObject uq = jsonObject["samplingMethod"].toObject();
       if (uq.contains("method")) {
 
           QString method =uq["method"].toString();

@@ -138,10 +138,10 @@ UQpyInputsReliability::outputToJSON(QJsonObject &jsonObject)
     bool result = true;
 
     QJsonObject uq;
-    uq["method"]=reliabilityMethod->currentText();
+    uq["method"]=reliabilityMethod->currentText().simplified().replace(" ","");
     theCurrentMethod->outputToJSON(uq);
 
-    jsonObject["reliabilityMethodData"]=uq;
+    jsonObject["methodData"]=uq;
 
     return result;
 }
@@ -156,8 +156,8 @@ UQpyInputsReliability::inputFromJSON(QJsonObject &jsonObject)
   //
   // get reliabilityMethodData, if not present it's an error
 
-  if (jsonObject.contains("reliabilityMethodData")) {
-      QJsonObject uq = jsonObject["reliabilityMethodData"].toObject();
+  if (jsonObject.contains("methodData")) {
+      QJsonObject uq = jsonObject["methodData"].toObject();
       if (uq.contains("method")) {
           QString method =uq["method"].toString();
           int index = reliabilityMethod->findText(method);
