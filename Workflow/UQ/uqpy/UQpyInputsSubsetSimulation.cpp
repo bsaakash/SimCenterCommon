@@ -86,17 +86,18 @@ UQpyInputsSubsetSimulation::UQpyInputsSubsetSimulation(QWidget *parent)
   initialSamplesLineEdit->setValidator(intValidator);
   layout->addWidget(initialSamplesLineEdit, row++, 2);
 
-  layout->addWidget(new QLabel("Failure threshold"), row, 1);
-  thresholdLineEdit = new QLineEdit();
-  thresholdLineEdit->setValidator(new QDoubleValidator());
-  layout->addWidget(thresholdLineEdit, row++, 2);
+ layout->addWidget(new QLabel("# samples per subset"), row, 1);
+ numSamplesLineEdit = new QLineEdit();
+ numSamplesLineEdit->setText(tr("100"));
+ intValidator = new QIntValidator();
+ intValidator->setBottom(0);
+ numSamplesLineEdit->setValidator(intValidator);
+ layout->addWidget(numSamplesLineEdit, row++, 2);
 
-//  layout->addWidget(new QLabel("# Samples per subset"), 2, 1);
-//  numSamplesLineEdit = new QLineEdit();
-//  intValidator = new QIntValidator();
-//  intValidator->setBottom(0);
-//  numSamplesLineEdit->setValidator(intValidator);
-//  layout->addWidget(numSamplesLineEdit, 2, 2);
+ layout->addWidget(new QLabel("Failure threshold"), row, 1);
+ thresholdLineEdit = new QLineEdit();
+ thresholdLineEdit->setValidator(new QDoubleValidator());
+ layout->addWidget(thresholdLineEdit, row++, 2);
 
   mcmcAlgorithmsWidget = new UQpyInputsMCMCAlgorithms();
   layout->addWidget(mcmcAlgorithmsWidget, row++, 1, 5, 2);
@@ -122,6 +123,7 @@ UQpyInputsSubsetSimulation::outputToJSON(QJsonObject &jsonObject){
     jsonObject["maxLevels"] = maxLevelsLineEdit->text().toInt();
     jsonObject["failureThreshold"] = thresholdLineEdit->text().toDouble();
     jsonObject["initial_samples"] = initialSamplesLineEdit->text().toInt();
+    jsonObject["samples_per_subset"] = numSamplesLineEdit->text().toInt();
     mcmcAlgorithmsWidget->outputToJSON(uq);
     jsonObject["samplingMethod"] = uq;
     return result;

@@ -68,6 +68,7 @@ private:
     QLineEdit *conditionalProbLineEdit;
     QLineEdit *maxLevelsLineEdit;
     QLineEdit *initialSamplesLineEdit;
+    QLineEdit *numSamplesLineEdit;
     QLineEdit *thresholdLineEdit;
     QDoubleValidator *doubleValidator;
     QIntValidator *intValidator;
