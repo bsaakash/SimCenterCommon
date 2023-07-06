@@ -35,8 +35,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 *************************************************************************** */
 #include "UQpyInputsReliability.h"
 
-//#include <UQpyResultsReliability.h>
-#include <DakotaResultsReliability.h>
+#include <UQpyResultsReliability.h>
+//#include <DakotaResultsReliability.h>
 #include <RandomVariablesContainer.h>
 
 
@@ -223,8 +223,8 @@ UQpyInputsReliability::inputAppDataFromJSON(QJsonObject &jsonObject)
 UQ_Results *
 UQpyInputsReliability::getResults(void) {
 
-    return new DakotaResultsReliability(RandomVariablesContainer::getInstance());
-//  return new UQpyResultsReliability(RandomVariablesContainer::getInstance());
+//    return new DakotaResultsReliability(RandomVariablesContainer::getInstance());
+  return new UQpyResultsReliability(RandomVariablesContainer::getInstance());
 }
 
 void
