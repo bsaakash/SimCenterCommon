@@ -41,6 +41,7 @@ SOURCES += $$PWD/UQ/UQ_EngineSelection.cpp \
     $$PWD/UQ/simcenterUQ/PLoMSimuWidget.cpp \
     $$PWD/UQ/customUQ/CustomUQ_Results.cpp \
     $$PWD/UQ/customUQ/UQ_JsonEngine.cpp \
+    $$PWD/UQ/uqpy/ModifiedMetropolisHastingsWidget.cpp \
     $$PWD/UQ/uqpy/UQpyEngine.cpp\
     $$PWD/UQ/uqpy/AffineInvariantMCMCInputsWidget.cpp \
     $$PWD/UQ/uqpy/UQpyInputsMCMCAlgorithms.cpp \
@@ -154,6 +155,7 @@ HEADERS += $$PWD/UQ/UQ_EngineSelection.h \
     $$PWD/UQ/UQ_Results.h \
     $$PWD/UQ/UQ_Engine.h \
     $$PWD/UQ/UQ_Method.h \
+    $$PWD/UQ/uqpy/ModifiedMetropolisHastingsWidget.h \
     $$PWD/UQ/uqpy/UQpyEngine.h\
     $$PWD/UQ/uqpy/AffineInvariantMCMCInputsWidget.h \
     $$PWD/UQ/uqpy/UQpyInputsMCMCAlgorithms.h \

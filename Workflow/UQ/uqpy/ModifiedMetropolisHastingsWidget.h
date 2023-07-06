@@ -1,5 +1,6 @@
-#ifndef UQPYINPUTSMCMCALGORITHMS_H
-#define UQPYINPUTSMCMCALGORITHMS_H
+#ifndef MODIFIEDMETROPOLISHASTINGSWIDGET_H
+#define MODIFIEDMETROPOLISHASTINGSWIDGET_H
+
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
@@ -19,7 +20,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
 ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -36,68 +37,38 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-#include <UQ_Engine.h>
-#include <AffineInvariantMCMCInputsWidget.h>
-#include <ModifiedMetropolisHastingsWidget.h>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QDebug>
-#include <QFileDialog>
-#include <QPushButton>
+// Written: fmckenna
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <time.h>
+#include <UQ_Method.h>
+class QLineEdit;
+class QIntValidator;
+class QDoubleValidator;
 
-#include <QStackedWidget>
-#include <QCheckBox>
-
-class DakotaResultsBayesianCalibration;
-class RandomVariablesContainer;
-
-class UQpyInputsMCMCAlgorithms : public UQ_Engine
+class ModifiedMetropolisHastingsWidget : public UQ_Method
 {
     Q_OBJECT
 public:
-    explicit UQpyInputsMCMCAlgorithms(QWidget *parent = 0);
-    ~UQpyInputsMCMCAlgorithms();
+    explicit ModifiedMetropolisHastingsWidget(QWidget *parent = 0);
+    ~ModifiedMetropolisHastingsWidget();
 
-    bool outputToJSON(QJsonObject &jsonObject);
-    bool inputFromJSON(QJsonObject &jsonObject);
-    bool outputAppDataToJSON(QJsonObject &jsonObject);
-    bool inputAppDataFromJSON(QJsonObject &jsonObject);
-
-
-    UQ_Results *getResults(void);
-    void setRV_Defaults(void);
-
-    int getMaxNumParallelTasks(void);
-    QString getMethodName();
-
-    UQ_Method *theCurrentMethod;
-
-signals:
-
-public slots:
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
     void clear(void);
-    void onTextChanged(const QString &arg1);
-    void numModelsChanged(int numModels);
+
+    int getNumberTasks(void);
 
 private:
-    QVBoxLayout *mLayout;
-    QVBoxLayout *layout;
-    QComboBox   *mcmcMethod;
-
-    DakotaResultsBayesianCalibration *results;
-
-    QStackedWidget *theStackedWidget;
-    AffineInvariantMCMCInputsWidget *theStretch;
-    ModifiedMetropolisHastingsWidget *theMmh;
-    QHBoxLayout *methodLayout;
+    QLineEdit *randomSeed;
+    QLineEdit *numSamples;
+    QIntValidator *intValidator;
+    QLineEdit *numChains;
+    QLineEdit *dimension;
+    QLineEdit *numBurnIn;
+    QLineEdit *jump;
+    QIntValidator *int1Validator;
+    QDoubleValidator *doubleValidator;
+    QLineEdit *logLikelihoodScript;
 };
 
-#endif // UQPYINPUTSMCMCALGORITHMS_H
+#endif // MODIFIEDMETROPOLISHASTINGSWIDGET_H
+
