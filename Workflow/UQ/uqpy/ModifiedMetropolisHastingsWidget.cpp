@@ -34,9 +34,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
 
-#include <AffineInvariantMCMCInputsWidget.h>
+#include <ModifiedMetropolisHastingsWidget.h>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -46,7 +45,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QFileDialog>
 #include <QPushButton>
 
-AffineInvariantMCMCInputsWidget::AffineInvariantMCMCInputsWidget(QWidget *parent)
+ModifiedMetropolisHastingsWidget::ModifiedMetropolisHastingsWidget(QWidget *parent)
 : UQ_Method(parent)
 {
     auto layout = new QGridLayout();
@@ -74,7 +73,7 @@ AffineInvariantMCMCInputsWidget::AffineInvariantMCMCInputsWidget(QWidget *parent
 //    layout->addWidget(new QLabel("# chains"), row, 0);
 //    layout->addWidget(numChains, row++, 1);
 
-    // create layout label and entry for burn in length
+//    // create layout label and entry for burn in length
 //    numBurnIn = new QLineEdit();
 //    numBurnIn->setText(tr("0"));
 //    numBurnIn->setValidator(intValidator);
@@ -104,15 +103,7 @@ AffineInvariantMCMCInputsWidget::AffineInvariantMCMCInputsWidget(QWidget *parent
 //    layout->addWidget(jump, row++, 1);
 
     // create layout label and entry for scale
-    scale = new QLineEdit();
-    scale->setText(tr("2.0"));
-    doubleValidator = new QDoubleValidator;
-    doubleValidator->setBottom(0.0);
-    scale->setValidator(doubleValidator);
-    scale->setToolTip("Specify the scale parameter of the stretch algorithm");
 
-    layout->addWidget(new QLabel("Scale"), row, 0);
-    layout->addWidget(scale, row++, 1);
 
 
     // create label and entry for seed to layout
@@ -143,33 +134,27 @@ AffineInvariantMCMCInputsWidget::AffineInvariantMCMCInputsWidget(QWidget *parent
     this->setLayout(layout);
 }
 
-AffineInvariantMCMCInputsWidget::~AffineInvariantMCMCInputsWidget()
+ModifiedMetropolisHastingsWidget::~ModifiedMetropolisHastingsWidget()
 {
 
 }
 
 bool
-AffineInvariantMCMCInputsWidget::outputToJSON(QJsonObject &jsonObj){
+ModifiedMetropolisHastingsWidget::outputToJSON(QJsonObject &jsonObj){
 
     bool result = true;
 //    jsonObj["burn-in"]=numBurnIn->text().toInt();
 //    jsonObj["jump"]=jump->text().toInt();
 //    jsonObj["numChains"]=numChains->text().toInt();
 //    jsonObj["samples"]=numSamples->text().toInt();
-    jsonObj["scale"]=scale->text().toDouble();
     jsonObj["dimension"]=dimension->text().toInt();
     jsonObj["randomState"]=randomSeed->text().toDouble();
 
-//    QString logLike = logLikelihoodScript->text();
-//    QFileInfo fileInfo(logLike);
-//    jsonObj["logLikelihoodFile"]=fileInfo.fileName();
-//    QString path = fileInfo.absolutePath();
-//    jsonObj["logLikelihoodPath"]=path;
     return result;
 }
 
 bool
-AffineInvariantMCMCInputsWidget::inputFromJSON(QJsonObject &jsonObject){
+ModifiedMetropolisHastingsWidget::inputFromJSON(QJsonObject &jsonObject){
 
     bool result = false;
 //    if (jsonObject.contains("samples")) {
@@ -200,13 +185,6 @@ AffineInvariantMCMCInputsWidget::inputFromJSON(QJsonObject &jsonObject){
 //        errorMessage(QString("ERROR: Did not find number of samples to jump"));
 //        return false;
 //    }
-    if (jsonObject.contains("scale")) {
-        double scl=jsonObject["scale"].toDouble();
-        scale->setText(QString::number(scl));
-    } else {
-        errorMessage(QString("ERROR: Did not find the scale"));
-        return false;
-    }
     if (jsonObject.contains("randomState")) {
         double rs=jsonObject["randomState"].toDouble();
         randomSeed->setText(QString::number(rs));
@@ -228,14 +206,14 @@ AffineInvariantMCMCInputsWidget::inputFromJSON(QJsonObject &jsonObject){
 }
 
 void
-AffineInvariantMCMCInputsWidget::clear(void)
+ModifiedMetropolisHastingsWidget::clear(void)
 {
 
 }
 
 
 int
-AffineInvariantMCMCInputsWidget::getNumberTasks()
+ModifiedMetropolisHastingsWidget::getNumberTasks()
 {
   return numChains->text().toInt();
 }

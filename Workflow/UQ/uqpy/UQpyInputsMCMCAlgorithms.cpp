@@ -19,8 +19,9 @@ UQpyInputsMCMCAlgorithms::UQpyInputsMCMCAlgorithms(QWidget *parent)
     label1->setText(QString("MCMC algorithm"));
     mcmcMethod = new QComboBox();
     mcmcMethod->addItem(tr("Stretch"));
-    mcmcMethod->setMaximumWidth(200);
-    mcmcMethod->setMinimumWidth(200);
+    mcmcMethod->addItem(tr("Modified Metropolis Hastings"));
+    mcmcMethod->setMaximumWidth(300);
+    mcmcMethod->setMinimumWidth(300);
 
     methodLayout->addWidget(label1);
     methodLayout->addWidget(mcmcMethod);
@@ -35,7 +36,10 @@ UQpyInputsMCMCAlgorithms::UQpyInputsMCMCAlgorithms(QWidget *parent)
     theStackedWidget = new QStackedWidget();
 
     theStretch = new AffineInvariantMCMCInputsWidget();
+    theMmh =  new ModifiedMetropolisHastingsWidget();
+
     theStackedWidget->addWidget(theStretch);
+    theStackedWidget->addWidget(theMmh);
 
     // set current widget to index 0
     theStackedWidget->setCurrentIndex(0);
@@ -56,6 +60,9 @@ void UQpyInputsMCMCAlgorithms::onTextChanged(const QString &text)
   if (text=="Stretch") {
     theStackedWidget->setCurrentIndex(0);
     theCurrentMethod = theStretch;
+  } else if (text=="Modified Metropolis Hastings"){
+    theStackedWidget->setCurrentIndex(1);
+    theCurrentMethod = theMmh;
   }
 }
 
