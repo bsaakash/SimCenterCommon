@@ -88,7 +88,7 @@ UQpyInputsSubsetSimulation::UQpyInputsSubsetSimulation(QWidget *parent)
 
  layout->addWidget(new QLabel("# samples per subset"), row, 1);
  numSamplesLineEdit = new QLineEdit();
- numSamplesLineEdit->setText(tr("100"));
+ numSamplesLineEdit->setText(tr("1000"));
  intValidator = new QIntValidator();
  intValidator->setBottom(0);
  numSamplesLineEdit->setValidator(intValidator);
@@ -132,15 +132,29 @@ bool
 UQpyInputsSubsetSimulation::inputFromJSON(QJsonObject &jsonObject){
     bool result = false;
 
-    if ( (jsonObject.contains("subsetSimulationData"))) {
-        QJsonObject uq = jsonObject["subsetSimulationData"].toObject();
-        double condProb = uq["conditionalProbability"].toDouble();
-        int maxLevel = uq["maxLevels"].toInt();
-        double thresh = uq["failureThreshold"].toDouble();
+    if ( (jsonObject.contains("method"))) {
+        QString methodName = jsonObject["method"].toString();
+        if (methodName != "Subset Simulation") {
+            qDebug() << "Reliability method is not 'Subset Simulation'";
+            return false;
+        }
+
+        double condProb = jsonObject["conditionalProbability"].toDouble();
+        int maxLevel = jsonObject["maxLevels"].toInt();
+        double thresh = jsonObject["failureThreshold"].toDouble();
+        int samplesPerSubset = jsonObject["samples_per_subset"].toInt();
         conditionalProbLineEdit->setText(QString::number(condProb));
         maxLevelsLineEdit->setText(QString::number(maxLevel));
         thresholdLineEdit->setText(QString::number(thresh));
-        bool result = mcmcAlgorithmsWidget->inputFromJSON(uq);
+        numSamplesLineEdit->setText(QString::number(samplesPerSubset));
+
+        if (!jsonObject.contains("samplingMethod")) {
+            qDebug() << "Did not find 'samplingMethod' data";
+            return false;
+        }
+        QJsonObject samplingMethodData = jsonObject["samplingMethod"].toObject();
+        bool result = mcmcAlgorithmsWidget->inputFromJSON(samplingMethodData);
+
         return result;
     }
 
