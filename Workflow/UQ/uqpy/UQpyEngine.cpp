@@ -152,8 +152,9 @@ bool
 UQpyEngine::outputToJSON( QJsonObject &jsonObject) {
 
     QString uqMethod = theEngineSelectionBox->currentText();
-    jsonObject["uqType"] = uqMethod.simplified().replace(" ","");
-//    jsonObject["parallelExecution"] = parallelCheckBox->isChecked();
+    jsonObject["uqType"] = uqMethod;
+//    jsonObject["uqType"] = uqMethod.simplified().replace(" ","");
+    jsonObject["parallelExecution"] = parallelCheckBox->isChecked();
 //    jsonObject["saveWorkDir"] = removeWorkdirCheckBox->isChecked();
 
     return theCurrentEngine->outputToJSON(jsonObject);
