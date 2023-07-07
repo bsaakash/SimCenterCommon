@@ -91,11 +91,8 @@ UQpyInputsMCMCAlgorithms::outputToJSON(QJsonObject &jsonObject)
 {
     bool result = true;
 
-    QJsonObject uq;
     jsonObject["method"]=mcmcMethod->currentText();
     result = theCurrentMethod->outputToJSON(jsonObject);
-
-//    jsonObject["samplingMethod"]=uq;
 
     return result;
 }
@@ -110,22 +107,18 @@ UQpyInputsMCMCAlgorithms::inputFromJSON(QJsonObject &jsonObject)
   //
   // get mcmcMethodData, if not present it's an error
   //
+  if (jsonObject.contains("method")) {
 
-  if (jsonObject.contains("samplingMethod")) {
-      QJsonObject uq = jsonObject["samplingMethod"].toObject();
-      if (uq.contains("method")) {
-
-          QString method =uq["method"].toString();
-          int index = mcmcMethod->findText(method);
-          if (index == -1) {
-              return false;
-          }
-          mcmcMethod->setCurrentIndex(index);
-          result = theCurrentMethod->inputFromJSON(uq);
-          if (result == false)
-              return result;
-
+      QString method =jsonObject["method"].toString();
+      int index = mcmcMethod->findText(method);
+      if (index == -1) {
+          return false;
       }
+      mcmcMethod->setCurrentIndex(index);
+      result = theCurrentMethod->inputFromJSON(jsonObject);
+      if (result == false)
+          return result;
+
   }
 
   return result;
@@ -134,47 +127,16 @@ UQpyInputsMCMCAlgorithms::inputFromJSON(QJsonObject &jsonObject)
 bool
 UQpyInputsMCMCAlgorithms::outputAppDataToJSON(QJsonObject &jsonObject)
 {
-    bool result = true;
-
-    jsonObject["Application"] = "UQpy";
-    QJsonObject uq;
-    uq["method"]=mcmcMethod->currentText();
-    theCurrentMethod->outputToJSON(uq);
-    jsonObject["ApplicationData"] = uq;
-
-    return result;
+    Q_UNUSED(jsonObject);
+    return true;
 }
 
 
 bool
 UQpyInputsMCMCAlgorithms::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    bool result = false;
-    this->clear();
-    //
-    // get mcmcMethodData, if not present it's an error
-
-    if (jsonObject.contains("ApplicationData")) {
-        QJsonObject uq = jsonObject["ApplicationData"].toObject();
-
-        if (uq.contains("method")) {
-          QString method = uq["method"].toString();
-          int index = mcmcMethod->findText(method);
-
-          if (index == -1) {
-              errorMessage(QString("ERROR: Unknown Method ") + method);
-              return false;
-          }
-          mcmcMethod->setCurrentIndex(index);
-          return theCurrentMethod->inputFromJSON(uq);
-        }
-
-    } else {
-        errorMessage("ERROR: Sampling Input Widget - no \"mcmcMethodData\" input");
-        return false;
-    }
-
-    return result;
+    Q_UNUSED(jsonObject);
+    return true;
 }
 
 
