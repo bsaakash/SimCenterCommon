@@ -82,14 +82,14 @@ ModifiedMetropolisHastingsWidget::ModifiedMetropolisHastingsWidget(QWidget *pare
 //    layout->addWidget(new QLabel("# burn-in"), row, 0);
 //    layout->addWidget(numBurnIn, row++, 1);
 
-    // create layout label and entry for dimensions
-    dimension = new QLineEdit();
-    dimension->setText(tr("1"));
-    dimension->setValidator(intValidator);
-    dimension->setToolTip("Specify the number of MCMC dimensions");
+//    // create layout label and entry for dimensions
+//    dimension = new QLineEdit();
+//    dimension->setText(tr("1"));
+//    dimension->setValidator(intValidator);
+//    dimension->setToolTip("Specify the number of MCMC dimensions");
 
-    layout->addWidget(new QLabel("# dimensions"), row, 0);
-    layout->addWidget(dimension, row++, 1);
+//    layout->addWidget(new QLabel("# dimensions"), row, 0);
+//    layout->addWidget(dimension, row++, 1);
 
     // create layout label and entry for jump
 //    jump = new QLineEdit();
@@ -147,7 +147,7 @@ ModifiedMetropolisHastingsWidget::outputToJSON(QJsonObject &jsonObj){
 //    jsonObj["jump"]=jump->text().toInt();
 //    jsonObj["numChains"]=numChains->text().toInt();
 //    jsonObj["samples"]=numSamples->text().toInt();
-    jsonObj["dimension"]=dimension->text().toInt();
+//    jsonObj["dimension"]=dimension->text().toInt();
     jsonObj["randomState"]=randomSeed->text().toDouble();
 
     return result;
