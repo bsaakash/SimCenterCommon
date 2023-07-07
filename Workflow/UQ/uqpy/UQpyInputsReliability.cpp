@@ -36,7 +36,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "UQpyInputsReliability.h"
 
 #include <UQpyResultsReliability.h>
-//#include <DakotaResultsReliability.h>
 #include <RandomVariablesContainer.h>
 
 
@@ -49,7 +48,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QDebug>
 #include <QFileDialog>
 #include <QPushButton>
-#include <sectiontitle.h>
+#include <SectionTitle.h>
 
 #include <QStackedWidget>
 #include <UQpyInputsSubsetSimulation.h>
@@ -138,7 +137,7 @@ UQpyInputsReliability::outputToJSON(QJsonObject &jsonObject)
     bool result = true;
 
     QJsonObject uq;
-    uq["method"]=reliabilityMethod->currentText().simplified().replace(" ","");
+    uq["method"]=reliabilityMethod->currentText();
     theCurrentMethod->outputToJSON(uq);
 
     jsonObject["methodData"]=uq;
@@ -177,53 +176,19 @@ UQpyInputsReliability::inputFromJSON(QJsonObject &jsonObject)
 bool
 UQpyInputsReliability::outputAppDataToJSON(QJsonObject &jsonObject)
 {
-    bool result = true;
-
-    jsonObject["Application"] = "UQpy";
-    QJsonObject uq;
-    uq["method"]=reliabilityMethod->currentText();
-    theCurrentMethod->outputToJSON(uq);
-    jsonObject["ApplicationData"] = uq;
-
-    return result;
+    Q_UNUSED(jsonObject);
+    return true;
 }
-
 
 bool
 UQpyInputsReliability::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    bool result = false;
-    this->clear();
-    //
-    // get reliabilityMethodData, if not present it's an error
-
-    if (jsonObject.contains("ApplicationData")) {
-        QJsonObject uq = jsonObject["ApplicationData"].toObject();
-
-        if (uq.contains("method")) {
-          QString method = uq["method"].toString();
-          int index = reliabilityMethod->findText(method);
-
-          if (index == -1) {
-              errorMessage(QString("ERROR: Unknown Method ") + method);
-              return false;
-          }
-          reliabilityMethod->setCurrentIndex(index);
-          return theCurrentMethod->inputFromJSON(uq);
-        }
-
-    } else {
-        errorMessage(QString("ERROR: Reliability Widget - no \"reliabilityMethodData\" input"));
-        return false;
-    }
-
-    return result;
+    Q_UNUSED(jsonObject);
+    return true;
 }
 
 UQ_Results *
 UQpyInputsReliability::getResults(void) {
-
-//    return new DakotaResultsReliability(RandomVariablesContainer::getInstance());
   return new UQpyResultsReliability(RandomVariablesContainer::getInstance());
 }
 
