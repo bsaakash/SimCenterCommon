@@ -39,6 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: fmckenna
 // Additional edits: Michael Gardner
 
+#include <QComboBox>
 #include "SectionTitle.h"
 #include "UQ_EngineSelection.h"
 #include <GoogleAnalytics.h>
@@ -50,10 +51,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <DakotaEngine.h>
 #include <SimCenterUQEngine.h>
 #include <UCSD_Engine.h>
-#include <UQpyEngine.h>
+//#include <UQpyEngine.h>
 #include <UQ_JsonEngine.h>
-#include <JsonConfiguredUQEngine.h>
-#include <UQpyEngine.h>
+//#include <JsonConfiguredUQEngine.h>
 
 UQ_EngineSelection::UQ_EngineSelection(bool includeNone,
 				       QString assetType,
@@ -156,7 +156,7 @@ UQ_EngineSelection::initialize()
     theSimCenterUQEngine = new SimCenterUQEngine(typeOption);
     theCustomEngine = new UQ_JsonEngine(typeOption);
     theUCSD_Engine = new UCSD_Engine(typeOption);
-    theUQpyEngine = new UQpyEngine(typeOption);
+//    theUQpyEngine = new UQpyEngine(typeOption);
 
     this->addComponent(QString("Dakota"), QString("Dakota-UQ"), theDakotaEngine);
     this->addComponent(QString("SimCenterUQ"), QString("SimCenter-UQ"), theSimCenterUQEngine);
@@ -164,7 +164,7 @@ UQ_EngineSelection::initialize()
     if (typeOption == All)
     {
       this->addComponent(QString("UCSD-UQ"), QString("UCSD-UQ"), theUCSD_Engine);
-      this->addComponent(QString("UQpy"), QString("UQpy"), theUQpyEngine);
+//      this->addComponent(QString("UQpy"), QString("UQpy"), theUQpyEngine);
     }
 
     if (includeNoneOption) {
@@ -224,8 +224,8 @@ void UQ_EngineSelection::engineSelectionChanged(QString arg1)
         theCurrentEngine = theCustomEngine;
     } else if (arg1 == "UCSD-UQ") {
         theCurrentEngine = theUCSD_Engine;
-    } else if (arg1 == "UQpy") {
-        theCurrentEngine = theUQpyEngine;
+//    } else if (arg1 == "UQpy") {
+//        theCurrentEngine = theUQpyEngine;
     } else {
       qDebug() << "ERROR .. UQ_EngineSelection selection .. type unknown: " << arg1;
     }

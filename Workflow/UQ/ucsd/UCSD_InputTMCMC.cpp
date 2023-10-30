@@ -36,7 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna
 
-#include <UCSD_TMMC.h>
+#include "QtWidgets/qgroupbox.h"
+#include <UCSD_InputTMCMC.h>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -52,7 +53,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <fstream>
 #include <sstream>
 
-UCSD_TMMC::UCSD_TMMC(QWidget *parent)
+UCSD_InputTMCMC::UCSD_InputTMCMC(QWidget *parent)
 :UQ_Method(parent)
 {
     auto layout = new QGridLayout();
@@ -107,8 +108,8 @@ UCSD_TMMC::UCSD_TMMC(QWidget *parent)
 
     // create label and entry for seed to layout
     srand(time(NULL));
-    int randomNumber = rand() % 1000 + 1;
-    //int randomNumber = arc4random() % 1000 + 1;
+//    int randomNumber = rand() % 1000 + 1;
+    int randomNumber = arc4random() % 1000 + 1;
     randomSeed = new QLineEdit();
     randomSeed->setText(QString::number(randomNumber));
     randomSeed->setValidator(new QIntValidator);
@@ -119,18 +120,43 @@ UCSD_TMMC::UCSD_TMMC(QWidget *parent)
 
     // create label and lineedit for calibration data file and add to layout
     calDataFileEdit = new QLineEdit();
-    layout->addWidget(new QLabel("Calibration Data File"), row, 0);
-    layout->addWidget(calDataFileEdit, row, 1, 1, 2);
+    layout->addWidget(new QLabel("Calibration Data Files"), row, 0);
+//    layout->addWidget(calDataFileEdit, row, 1, 1, 2);
 
     QPushButton *chooseCalDataFile = new QPushButton("Choose");
+//    connect(chooseCalDataFile, &QPushButton::clicked, this, [=](){
+//          QString fileName = QFileDialog::getOpenFileName(this,tr("Open File"),"", "All files (*)");
+//          if (!fileName.isEmpty()) {
+//              calDataFileEdit->setText(fileName);
+//              numExperiments = getNumExp(fileName);
+//          }
+//    });
+    fileGroupBox = new QGroupBox("Selected Data Files");
+    fileGroupBox->hide();
+    fileBoxLayout = new QVBoxLayout(fileGroupBox);
     connect(chooseCalDataFile, &QPushButton::clicked, this, [=](){
-          QString fileName = QFileDialog::getOpenFileName(this,tr("Open File"),"", "All files (*)");
-          if (!fileName.isEmpty()) {
-              calDataFileEdit->setText(fileName);
-              numExperiments = getNumExp(fileName);
+          QStringList selectedFiles = QFileDialog::getOpenFileNames(this, tr("Open File"),"", "All files (*)");
+          // Remove any previously added labels from the layout and delete them
+          for (QLabel* label : qAsConst(fileLabels)) {
+              fileBoxLayout->removeWidget(label);
+              delete label;
           }
+          fileLabels.clear();
+
+          // Add new labels for the selected filenames to the form layout
+          for (const QString& filePath : selectedFiles) {
+              QLabel* label = new QLabel(filePath, this);
+              fileBoxLayout->addWidget(label);
+              fileLabels.append(label);
+          }
+          if (selectedFiles.isEmpty()) {
+              fileGroupBox->hide();
+          } else fileGroupBox->show();
     });
-    layout->addWidget(chooseCalDataFile, row++, 3);
+
+//    connect(chooseCalDataFile, SIGNAL(clicked()), this, SLOT(selectMultipleFiles(bool)));
+    layout->addWidget(chooseCalDataFile, row++, 1);
+    layout->addWidget(fileGroupBox, row++, 0);
 
     // create label and lineedit for loglikelihood script and add to layout
     logLikelihoodScript = new QLineEdit();
@@ -188,12 +214,12 @@ UCSD_TMMC::UCSD_TMMC(QWidget *parent)
     connect(advancedOptionsCheckBox,SIGNAL(toggled(bool)),this,SLOT(advancedOptionsSlotFunction(bool)));
 }
 
-UCSD_TMMC::~UCSD_TMMC()
+UCSD_InputTMCMC::~UCSD_InputTMCMC()
 {
 
 }
 
-bool UCSD_TMMC::checkSampleSize(int sampleSize) {
+bool UCSD_InputTMCMC::checkSampleSize(int sampleSize) {
     bool sizeOk = true;
     if (sampleSize < requiredSampleSize) {
         sizeOk = false;
@@ -211,7 +237,7 @@ bool UCSD_TMMC::checkSampleSize(int sampleSize) {
 }
 
 // SLOT function
-void UCSD_TMMC::advancedOptionsSlotFunction(bool tog)
+void UCSD_InputTMCMC::advancedOptionsSlotFunction(bool tog)
 {
 
     lineA->setVisible(tog);
@@ -226,7 +252,7 @@ void UCSD_TMMC::advancedOptionsSlotFunction(bool tog)
 }
 
 bool
-UCSD_TMMC::outputToJSON(QJsonObject &jsonObj){
+UCSD_InputTMCMC::outputToJSON(QJsonObject &jsonObj){
 
     bool result = true;
 
@@ -262,7 +288,7 @@ UCSD_TMMC::outputToJSON(QJsonObject &jsonObj){
 }
 
 bool
-UCSD_TMMC::inputFromJSON(QJsonObject &jsonObject){
+UCSD_InputTMCMC::inputFromJSON(QJsonObject &jsonObject){
 
   bool result = true;
   this->clear();
@@ -317,14 +343,14 @@ UCSD_TMMC::inputFromJSON(QJsonObject &jsonObject){
 }
 
 void
-UCSD_TMMC::clear(void)
+UCSD_InputTMCMC::clear(void)
 {
 
 }
 
 
 int
-UCSD_TMMC::getNumberTasks()
+UCSD_InputTMCMC::getNumberTasks()
 {
   return numParticles->text().toInt();
 }
@@ -350,7 +376,7 @@ UCSD_TMMC::getNumberTasks() {
 */
 
 bool
-UCSD_TMMC::copyFiles(QString &fileDir) {
+UCSD_InputTMCMC::copyFiles(QString &fileDir) {
 
     QString calFileName = calDataFileEdit->text();
     if (calFileName != "") {
@@ -448,7 +474,7 @@ UCSD_TMMC::copyFiles(QString &fileDir) {
 }
 
 int
-UCSD_TMMC::getNumExp(QString &calFileName) {
+UCSD_InputTMCMC::getNumExp(QString &calFileName) {
 
     std::ifstream calDataFile(calFileName.toStdString());
     int numExperiments = 0;
@@ -461,3 +487,31 @@ UCSD_TMMC::getNumExp(QString &calFileName) {
     return numExperiments;
 }
 
+
+
+void
+UCSD_InputTMCMC::selectMultipleFiles() {
+//    Q_UNUSED(clicked);
+    QFileDialog fileDialog;
+    fileDialog.setFileMode(QFileDialog::ExistingFiles);
+    fileDialog.setWindowTitle("Select Multiple Files");
+    fileDialog.setDirectory("");
+
+    if (fileDialog.exec()) {
+        QStringList selectedFiles = fileDialog.selectedFiles();
+
+        // Remove any previously added labels from the layout and delete them
+        for (QLabel* label : qAsConst(fileLabels)) {
+            fileBoxLayout->removeWidget(label);
+            delete label;
+        }
+        fileLabels.clear();
+
+        // Add new labels for the selected filenames to the form layout
+        for (const QString& filePath : selectedFiles) {
+            QLabel* label = new QLabel(filePath, this);
+            fileBoxLayout->addWidget(label);
+            fileLabels.append(label);
+        }
+    }
+}

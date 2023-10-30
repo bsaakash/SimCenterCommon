@@ -90,7 +90,7 @@ public slots:
 
 private:
    QLabel *label;
-   QComboBox   *theMethodSelection;
+   QComboBox   *theEngineSelectionBox;
    QStackedWidget *theStackedWidget;
    UQ_Method *theCurrentMethod;
    UQ_Method *theTMMC;

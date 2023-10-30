@@ -41,6 +41,7 @@ SOURCES += $$PWD/UQ/UQ_EngineSelection.cpp \
     $$PWD/UQ/simcenterUQ/PLoMSimuWidget.cpp \
     $$PWD/UQ/customUQ/CustomUQ_Results.cpp \
     $$PWD/UQ/customUQ/UQ_JsonEngine.cpp \
+    $$PWD/UQ/ucsd/UCSD_InputTMCMC.cpp \
     $$PWD/UQ/uqpy/ModifiedMetropolisHastingsWidget.cpp \
     $$PWD/UQ/uqpy/UQpyEngine.cpp\
     $$PWD/UQ/uqpy/AffineInvariantMCMCInputsWidget.cpp \
@@ -72,7 +73,6 @@ SOURCES += $$PWD/UQ/UQ_EngineSelection.cpp \
     $$PWD/UQ/dakota/DakotaInputOptimization.cpp\
     $$PWD/UQ/dakota/DakotaResultsOptimization.cpp\
     $$PWD/UQ/ucsd/UCSD_Engine.cpp \
-    $$PWD/UQ/ucsd/UCSD_TMMC.cpp \
     $$PWD/UQ/ucsd/UCSD_Results.cpp \
     $$PWD/UQ/ucsd/BayesPlots.cpp \
     $$PWD/UQ/simcenterUQ/SimCenterUQEngine.cpp \
@@ -155,6 +155,7 @@ HEADERS += $$PWD/UQ/UQ_EngineSelection.h \
     $$PWD/UQ/UQ_Results.h \
     $$PWD/UQ/UQ_Engine.h \
     $$PWD/UQ/UQ_Method.h \
+    $$PWD/UQ/ucsd/UCSD_InputTMCMC.h \
     $$PWD/UQ/uqpy/ModifiedMetropolisHastingsWidget.h \
     $$PWD/UQ/uqpy/UQpyEngine.h\
     $$PWD/UQ/uqpy/AffineInvariantMCMCInputsWidget.h \
@@ -189,7 +190,6 @@ HEADERS += $$PWD/UQ/UQ_EngineSelection.h \
     $$PWD/UQ/dakota/DakotaResultsOptimization.h\
     $$PWD/UQ/simcenterUQ/PLoMSimuWidget.h \
     $$PWD/UQ/ucsd/UCSD_Engine.h \
-    $$PWD/UQ/ucsd/UCSD_TMMC.h \
     $$PWD/UQ/ucsd/UCSD_Results.h \
     $$PWD/UQ/ucsd/BayesPlots.h \
     $$PWD/UQ/simcenterUQ/SimCenterUQEngine.h \

@@ -52,7 +52,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QDebug>
 
-#include <UCSD_TMMC.h>
+#include <UCSD_InputTMCMC.h>
 
 UCSD_Engine::UCSD_Engine(UQ_EngineType type, QWidget *parent)
 : UQ_Engine(parent), theCurrentMethod(0)
@@ -67,14 +67,21 @@ UCSD_Engine::UCSD_Engine(UQ_EngineType type, QWidget *parent)
     //
 
     QHBoxLayout *theSelectionLayout = new QHBoxLayout();
+
     label = new QLabel();
     label->setText(QString("Method"));
-    theMethodSelection = new QComboBox();
-    theMethodSelection->addItem(tr("Transitional Markov chain Monte Carlo"));
-    theMethodSelection->setMinimumWidth(600);
+
+    theEngineSelectionBox = new QComboBox();
+    theEngineSelectionBox->addItem(tr("Non-hierarchical Model"));
+    theEngineSelectionBox->addItem(tr("Hierarchical Model"));
+    int width = theEngineSelectionBox->minimumSizeHint().width();
+    theEngineSelectionBox->view()->setMinimumWidth(width);
+
+//    theMethodSelection->addItem(tr("Transitional Markov chain Monte Carlo"));
+//    theMethodSelection->setMinimumWidth(600);
 
     theSelectionLayout->addWidget(label);
-    theSelectionLayout->addWidget(theMethodSelection);
+    theSelectionLayout->addWidget(theEngineSelectionBox);
     theSelectionLayout->addStretch();
     layout->addLayout(theSelectionLayout);
 
@@ -91,14 +98,14 @@ UCSD_Engine::UCSD_Engine(UQ_EngineType type, QWidget *parent)
     // create the individual widgets add to stacked widget
     //
 
-    theTMMC = new UCSD_TMMC();
+    theTMMC = new UCSD_InputTMCMC();
     theStackedWidget->addWidget(theTMMC);
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
     theCurrentMethod=theTMMC;
 
-    connect(theMethodSelection,
+    connect(theEngineSelectionBox,
 	    SIGNAL(currentTextChanged(QString)),
 	    this,
         SLOT(methodChanged(QString)));
@@ -141,7 +148,7 @@ UCSD_Engine::getMaxNumParallelTasks(void) {
 bool
 UCSD_Engine::outputToJSON(QJsonObject &jsonObject) {
 
-    jsonObject["uqType"] = theMethodSelection->currentText();
+    jsonObject["uqType"] = theEngineSelectionBox->currentText();
     jsonObject["parallelExecution"] = parallelCheckBox->isChecked();
     return theCurrentMethod->outputToJSON(jsonObject);
 }
@@ -155,8 +162,8 @@ UCSD_Engine::inputFromJSON(QJsonObject &jsonObject) {
     emit onUQ_MethodUpdated("Bayesian Calibration");
     emit onUQ_EngineChanged("UCSD-UQ");
 
-    int index = theMethodSelection->findText(selection);
-    theMethodSelection->setCurrentIndex(index);
+    int index = theEngineSelectionBox->findText(selection);
+    theEngineSelectionBox->setCurrentIndex(index);
     this->methodChanged(selection);
     if (theCurrentMethod != 0)
         result = theCurrentMethod->inputFromJSON(jsonObject);
@@ -212,7 +219,7 @@ UCSD_Engine::getProcessingScript() {
 QString
 UCSD_Engine::getMethodName() {
 
-    return theMethodSelection->currentText();
+    return theEngineSelectionBox->currentText();
 }
 
 bool
@@ -220,9 +227,9 @@ UCSD_Engine::fixMethod(QString Methodname) {
      if (Methodname!="Bayesian Calibration" ) {
         return false;
     } else {
-        int res = theMethodSelection->findText("Transitional Markov chain Monte Carlo");
-        theMethodSelection->setCurrentIndex(res);
-        theMethodSelection->hide();
+        int res = theEngineSelectionBox->findText("Transitional Markov chain Monte Carlo");
+        theEngineSelectionBox->setCurrentIndex(res);
+        theEngineSelectionBox->hide();
         label->hide();
         return true;
     }

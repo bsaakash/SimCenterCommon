@@ -1,5 +1,5 @@
-#ifndef UCSD_TMMC_H
-#define UCSD_TMMC_H
+#ifndef UCSD_INPUTTMCMC_H
+#define UCSD_INPUTTMCMC_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -41,17 +41,18 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <UQ_Method.h>
 class QLineEdit;
-class QGroupBox;
+#include <QGroupBox>
 class QCheckBox;
 class QLabel;
 class QFrame;
+#include <QVBoxLayout>
 
-class UCSD_TMMC : public UQ_Method
+class UCSD_InputTMCMC : public UQ_Method
 {
     Q_OBJECT
 public:
-    explicit UCSD_TMMC(QWidget *parent = 0);
-    virtual ~UCSD_TMMC();
+    explicit UCSD_InputTMCMC(QWidget *parent = 0);
+    virtual ~UCSD_InputTMCMC();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
@@ -71,6 +72,7 @@ public:
 
 public slots:
      void advancedOptionsSlotFunction(bool tog);
+     void selectMultipleFiles();
 
 private:
   QLineEdit *numParticles;
@@ -88,6 +90,9 @@ private:
   QLabel *numSamplesError;
   QLabel *numSamplesWarning;
   QLineEdit *maxRunTime;
+  QGroupBox* fileGroupBox;
+  QVBoxLayout* fileBoxLayout;
+  QVector<QLabel*> fileLabels;
 };
 
-#endif // UCSD_TMMC_H
+#endif // UCSD_INPUTTMCMC_H
