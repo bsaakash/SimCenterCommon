@@ -160,7 +160,9 @@ UCSD_InputTMCMC::UCSD_InputTMCMC(QWidget *parent)
                                  "be infeasible for expensive models.");
     layout->addWidget(useApproximationCheckBox, row++, 0);
     layout->addWidget(useApproximationMessageLabel, row++, 1);
-    connect(useApproximationCheckBox, &QCheckBox::stateChanged, this, &UCSD_InputTMCMC::onUseApproximationCheckBoxStateChanged);
+//    connect(useApproximationCheckBox, &QCheckBox::stateChanged, this, &UCSD_InputTMCMC::onUseApproximationCheckBoxStateChanged);
+    connect(useApproximationCheckBox, &QCheckBox::toggled,
+            this, &UCSD_InputTMCMC::onUseApproximationCheckBoxToggled);
 
 
     readCovarianceDataCheckBox = new QCheckBox();
@@ -247,6 +249,23 @@ void UCSD_InputTMCMC::advancedOptionsSlotFunction(bool tog)
 void UCSD_InputTMCMC::onUseApproximationCheckBoxStateChanged(int state)
 {
     if (state == Qt::Checked) {
+        useApproximationMessageLabel->setText(
+            "Sampling from an approximation of the updated parameter distribution using the TMCMC algorithm.\n"
+            "The response of the computational model is approximated using Gaussian process regression,\n"
+            "and the approximation is iteratively refined using active learning.\n"
+        );
+    } else {
+        useApproximationMessageLabel->setText(
+            "Sampling from the updated parameter distribution using the TMCMC algorithm.\n"
+            "The computational model is directly used in the algorithm, and\n"
+            "if the model is expensive (e.g., > 1 minute per evaluation), this approach may be infeasible."
+        );
+    }
+}
+
+void UCSD_InputTMCMC::onUseApproximationCheckBoxToggled(bool checked)
+{
+    if (checked) {
         useApproximationMessageLabel->setText(
             "Sampling from an approximation of the updated parameter distribution using the TMCMC algorithm.\n"
             "The response of the computational model is approximated using Gaussian process regression,\n"

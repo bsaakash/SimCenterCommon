@@ -81,7 +81,7 @@ public slots:
 
 private slots:
      void onUseApproximationCheckBoxStateChanged(int state);
-
+     void onUseApproximationCheckBoxToggled(bool checked);
 
 private:
   QLineEdit *numParticles;
