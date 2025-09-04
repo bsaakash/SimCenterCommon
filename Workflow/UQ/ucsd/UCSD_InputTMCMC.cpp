@@ -160,7 +160,7 @@ UCSD_InputTMCMC::UCSD_InputTMCMC(QWidget *parent)
                                  "be infeasible for expensive models.");
     layout->addWidget(useApproximationCheckBox, row++, 0);
     layout->addWidget(useApproximationMessageLabel, row++, 1);
-    connect(useApproximationCheckBox, &QCheckBox::stateChanged, this, &UCSD_InputTMCMC::onUseApproximationCheckBoxSateChanged);
+    connect(useApproximationCheckBox, &QCheckBox::stateChanged, this, &UCSD_InputTMCMC::onUseApproximationCheckBoxStateChanged);
 
 
     readCovarianceDataCheckBox = new QCheckBox();
@@ -244,7 +244,7 @@ void UCSD_InputTMCMC::advancedOptionsSlotFunction(bool tog)
     }
 }
 
-void UCSD_InputTMCMC::onUseApproximationCheckBoxSateChanged(int state)
+void UCSD_InputTMCMC::onUseApproximationCheckBoxStateChanged(int state)
 {
     if (state == Qt::Checked) {
         useApproximationMessageLabel->setText(

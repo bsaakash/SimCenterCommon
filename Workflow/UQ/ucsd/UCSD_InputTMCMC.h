@@ -80,7 +80,8 @@ public slots:
      void advancedOptionsSlotFunction(bool tog);
 
 private slots:
-     void onUseApproximationCheckBoxSateChanged(int state);
+     void onUseApproximationCheckBoxStateChanged(int state);
+
 
 private:
   QLineEdit *numParticles;
